@@ -1,24 +1,18 @@
 import React from "react";
 import SearchForm from "../../components/SearchForm";
-import StartupCard from "@/components/StartupCard";
+import StartupCard, { StartupCardType } from "@/components/StartupCard";
+import { STARTUPS_QUERY } from "@/sanity/lib/queries";
+import { client } from "@/sanity/lib/client";
+
 export default async function Home({
   searchParams,
 }: {
   searchParams: Promise<{ query?: string }>;
 }) {
   const query = (await searchParams).query;
-  const posts = [
-    {
-      _createdAt: new Date(),
-      views: 55,
-      author: { _id: 1, name: "Peter Jackson" },
-      description: "This is a description",
-      image:
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Tloftr-logo.svg/500px-Tloftr-logo.svg.png",
-      category: "Movies",
-      title: "LOTR",
-    },
-  ];
+
+  const posts = await client.fetch(STARTUPS_QUERY);
+
   return (
     <>
       <section className="pink_container">
@@ -37,7 +31,7 @@ export default async function Home({
         </p>
         <ul className="mt-7 card_grid">
           {posts?.length > 0 ? (
-            posts.map((post: StartupTypeCard, index: number) => (
+            posts.map((post: StartupCardType, index: number) => (
               <StartupCard key={post?._id} post={post} />
             ))
           ) : (
